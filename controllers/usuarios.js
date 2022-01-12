@@ -9,42 +9,21 @@ const usuariosGet = async (req, res) => {
   const { limit = 5, nombre, skip = 0} = req.query;
   const query = { 'estado': true };
   let regexp = null;
+  let dataUsuarios = [];
   if(nombre){
     regexp = new RegExp("^" + nombre , 'i');
+    dataUsuarios = await Usuario.find(query).or([{'nombre': regexp}, {'username': regexp}]).skip(skip).limit(limit);dataUsuarios = new Promise((res, rej) => Usuario.search(nombre, {nombre: regexp} , (err, results) => res(results))).then(data => data);
   }
-
-  const dataUsuarios = await Usuario.search(nombre, {nombre: regexp} , (err, results) => results);
-  
-  console.log(dataUsuarios);
-  
-  // go
 
   const queryFetch = [
     ...(nombre ? [dataUsuarios] : [Usuario.find(query).skip(Number(skip)).limit(Number(limit))]),
-    Usuario.countDocuments(query)
+    ...(nombre ? [dataUsuarios] : [Usuario.countDocuments(query)])
   ];
 
   const [usuarios, total] = await Promise.all(queryFetch);
-  console.log(usuarios, total);
-  // go!
-  // 
   res.json({
-    total, usuarios
+    total: total.length, usuarios
   });
-  /* 
-  const query = req.query;
-  const regexp = new RegExp("^" + query.nombre);
-  const data = {"nombre": regexp};
-  Usuario.find(data, function(err, users) {
-    if(err) {
-        res.status(400).json({
-            success: false, 
-            message: 'Error procesando la búsqueda ' + err
-        }); 
-    };
-    res.status(201).send(users);
-    console.log(data);
-  });*/
 }
 const usuariosPut = async (req, res = response) => {
   const { id } = req.params;
