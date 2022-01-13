@@ -9,6 +9,7 @@ class Server {
     this.usuariosPath = '/api/usuarios';
     this.rolesPath = '/api/roles';
     this.authPath = '/api/auth';
+    this.projectPath = '/api/proyectos';
 
     //DB
     this.conectarDB();
@@ -31,6 +32,7 @@ class Server {
     this.app.use(this.usuariosPath, require('../routes/usuarios'));
     this.app.use(this.rolesPath, require('../routes/roles'));
     this.app.use(this.authPath, require('../routes/auth'));
+    this.app.use(this.projectPath, require('../routes/proyectos'));
   }
   listen(){
     this.app.listen(this.port);

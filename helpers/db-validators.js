@@ -1,10 +1,18 @@
 const Role = require('../models/role');
 const Usuario = require('../models/usuario');
+const Proyecto = require('../models/proyectos-tatoo');
 
 const isValidRole = async (rolename = '') => {
   const rolIsValid = await Role.findOne({rolename});
   if(!rolIsValid){
     throw new Error(`El rol <<${rolename}>> es inválido, no esta registrado.`);
+  }
+};
+
+const isValidProject = async (projectName = '') => {
+  const projectIsValid = await Proyecto.findOne({rolename});
+  if(!projectIsValid){
+    throw new Error(`El proyecto <<${projectName}>> es inválido, no esta registrado.`);
   }
 };
 
@@ -23,6 +31,7 @@ const userExists = async (id) => {
 }
 
 module.exports = {
+  isValidProject,
   isValidRole,
   emailExists,
   userExists

@@ -1,17 +1,28 @@
 const { request, response } = require('express');
 const Usuario = require('../models/usuario');
 const bcrypt = require('bcryptjs');
+const res = require('express/lib/response');
+const req = require('express/lib/request');
+const { all } = require('express/lib/application');
 
 const usuariosGet = async (req, res) => {
-  const { limit = 5, skip = 0} = req.query;
+  const { limit = 5, nombre, skip = 0} = req.query;
   const query = { 'estado': true };
+  let regexp = null;
+  let dataUsuarios = [];
+  if(nombre){
+    regexp = new RegExp("^" + nombre , 'i');
+    dataUsuarios = await Usuario.find(query).or([{'nombre': regexp}, {'username': regexp}]).skip(skip).limit(limit);dataUsuarios = new Promise((res, rej) => Usuario.search(nombre, {nombre: regexp} , (err, results) => res(results))).then(data => data);
+  }
+
   const queryFetch = [
-    Usuario.find(query).skip(Number(skip)).limit(Number(limit)),
-    Usuario.countDocuments(query)
+    ...(nombre ? [dataUsuarios] : [Usuario.find(query).skip(Number(skip)).limit(Number(limit))]),
+    ...(nombre ? [dataUsuarios] : [Usuario.countDocuments(query)])
   ];
-  const [ usuarios, total ] = await Promise.all(queryFetch);
+
+  const [usuarios, total] = await Promise.all(queryFetch);
   res.json({
-    total, usuarios
+    total: total.length, usuarios
   });
 }
 const usuariosPut = async (req, res = response) => {
@@ -25,13 +36,13 @@ const usuariosPut = async (req, res = response) => {
   res.json(user);
 }
 const usuariosPost = async (req, res = response) => {
-  const { nombre, edad, sexo, correo, rol, password } = req.body;
-  const usuario = new Usuario({ nombre, edad, sexo, correo, rol, password });
+  const { nombre, username, edad, gender, comuna_local, direccion_local, correo, rol, password } = req.body;
+  const usuario = new Usuario({ nombre, username, edad, gender, comuna_local, direccion_local, correo, rol, password });
   const salt = bcrypt.genSaltSync();
   usuario.password = bcrypt.hashSync(password, salt);
   await usuario.save();
   res.json({
-    message: 'post API - controlador',
+    message: 'Usuario creado',
     usuario
   });
 }
@@ -45,6 +56,26 @@ const usuariosDelete = async (req, res = response) => {
     uid
   });
 }
+
+
+/*
+function signIn (req, res){
+  Usuario.find({ email: req.body.email, password: req.body.password }, (err, user) => {
+    if(err) {
+      return res.status(500).send({message: err})
+    }
+    if(!user){
+      return res.status(404).send({message: 'No existe el usuario'})
+    }
+    req.Usuario = Usuario
+    res.status(200).send({
+      message: 'Te has logueado correctamente',
+      usuariosGet
+    })
+  })
+}
+*/
+
 
 module.exports = {
   usuariosGet,
