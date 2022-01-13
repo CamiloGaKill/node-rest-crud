@@ -36,8 +36,8 @@ const usuariosPut = async (req, res = response) => {
   res.json(user);
 }
 const usuariosPost = async (req, res = response) => {
-  const { nombre, username, edad, gender, comuna_local, direccion_local, correo, rol, password } = req.body;
-  const usuario = new Usuario({ nombre, username, edad, gender, comuna_local, direccion_local, correo, rol, password });
+  const { nombre, username, edad, gender, comuna_local, direccion_local, correo, rol, password, profileImg } = req.body;
+  const usuario = new Usuario({ nombre, username, edad, gender, comuna_local, direccion_local, correo, rol, password, profileImg });
   const salt = bcrypt.genSaltSync();
   usuario.password = bcrypt.hashSync(password, salt);
   await usuario.save();
@@ -56,26 +56,6 @@ const usuariosDelete = async (req, res = response) => {
     uid
   });
 }
-
-
-/*
-function signIn (req, res){
-  Usuario.find({ email: req.body.email, password: req.body.password }, (err, user) => {
-    if(err) {
-      return res.status(500).send({message: err})
-    }
-    if(!user){
-      return res.status(404).send({message: 'No existe el usuario'})
-    }
-    req.Usuario = Usuario
-    res.status(200).send({
-      message: 'Te has logueado correctamente',
-      usuariosGet
-    })
-  })
-}
-*/
-
 
 module.exports = {
   usuariosGet,
