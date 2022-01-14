@@ -38,17 +38,7 @@ const postProject = async (req,res = response) =>{
         idTatuador,
         tatuador        
     };
-    //Todos los trabajos
-
-    /*const allProyects = {
-        id: id,
-        imgUrl,
-        tatuador        
-    };
-    */
-
     const Proyecto = new proyecto(newProyect);
-    console.log(Proyecto);
     await Proyecto.save();
 
     return res.json({

@@ -32,9 +32,6 @@ const proyectoSchema = Schema({
 
 
 proyectoSchema.methods.setImgUrl = function setImgUrl () {
-   /* const {host, port } = appConfig
-    this.imgUrl = `${host}:${port}/public/${filename}`*/
-    
     const { title, _id,  imgUrl } = this.toObject();
     proyectos.uid = _id;
     return proyectos;
