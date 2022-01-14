@@ -15,7 +15,7 @@ const proyectoSchema = Schema({
         type:String
     },
     idTatuador:{
-        type: Number
+        type: String
     },
     //Autor
     tatuador:{

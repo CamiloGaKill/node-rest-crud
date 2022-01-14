@@ -42,7 +42,8 @@ const postProject = async (req,res = response) =>{
     await Proyecto.save();
 
     return res.json({
-        message:'La imagen fue guardada'
+        message:'La imagen fue guardada',
+        Proyecto
     })
 }
 
