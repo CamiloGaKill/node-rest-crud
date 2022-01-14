@@ -2,7 +2,6 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validarCampos');
 const { validarJWT } = require('../middlewares/validar-jwt');
-const { esElTatuadorDelProyecto } = require('../middlewares/validar-tatuador');
 
 const { usuariosGet, usuariosPut, usuariosPost, usuariosDelete } = require('../controllers/usuarios');
 const { isValidRole, emailExists, userExists } = require('../helpers/db-validators');
